@@ -1,0 +1,62 @@
+{
+    "name": "__MSG_appName__",
+    "short_name": "__MSG_appShortName__",
+    "description": "__MSG_appDescription__",
+    "homepage_url": "https://github.com/YTG2G3/ChatGPT-in-Edge",
+    "version": "0.0.1",
+    "version_name": "0.0.1",
+    "manifest_version": 3,
+    "default_locale": "en",
+    "minimum_chrome_version": "88",
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "storage"
+    ],
+    "icons": {
+        "128": "assets/img/128x128.png"
+    },
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_icon": {
+            "16": "assets/img/16x16.png",
+            "24": "assets/img/32x32.png",
+            "32": "assets/img/48x48.png",
+            "128": "assets/img/128x128.png"
+        },
+        "default_title": "__MSG_appName__",
+        "default_popup": "assets/popup/popup.html"
+    },
+    "commands": {
+        "setQuestion": {
+            "suggested_key": {
+                "default": "Alt+X",
+                "mac": "Command+X"
+            },
+            "description": "Set question"
+        },
+        "addChoice": {
+            "suggested_key": {
+                "default": "Alt+C",
+                "mac": "Command+C"
+            },
+            "description": "Add choice"
+        },
+        "clearChoice": {
+            "suggested_key": {
+                "default": "Alt+Space",
+                "mac": "Command+Space"
+            },
+            "description": "Clear choice"
+        },
+        "answer": {
+            "suggested_key": {
+                "default": "Alt+V",
+                "mac": "Command+V"
+            },
+            "description": "Answer the question"
+        }
+    }
+}

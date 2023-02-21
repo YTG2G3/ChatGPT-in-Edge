@@ -1,0 +1,11 @@
+{
+    "appName": {
+        "message": "ChatGPT in Edge"
+    },
+    "appShortName": {
+        "message": "ChatGPT in Edge"
+    },
+    "appDescription": {
+        "message": "Edge Extension for using ChatGPT in browser as an extension."
+    }
+}
