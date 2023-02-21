@@ -8,5 +8,5 @@ chrome.storage.local.get(["token", "question", "choices"], (items) => {
 document.getElementById('sendtoken').onclick = () => {
     let token = document.getElementById("token").value;
     chrome.storage.local.set({ token });
-    chrome.extension.sendMessage({ token }, (success) => document.getElementById("token").value = success ? "SUCCESS" : "FAILURE");
+    chrome.runtime.sendMessage({ token });
 }

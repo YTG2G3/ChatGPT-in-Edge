@@ -13,6 +13,9 @@
         "scripting",
         "storage"
     ],
+    "host_permissions": [
+        "https://chat.duti.tech/api/conversation"
+    ],
     "icons": {
         "128": "assets/img/128x128.png"
     },

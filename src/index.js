@@ -14,12 +14,9 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     let { token } = request;
     gpt = new ChatGPTUnofficialProxyAPI({ accessToken: token });
 
-    try {
-        await gpt.sendMessage("Respond with a 1");
-        sendResponse(true);
-    } catch (error) {
-        sendResponse(false);
-    }
+    gpt.sendMessage("Respond with 'Hello World'").then(() => {
+        console.log("Connected");
+    });
 })
 
 chrome.commands.onCommand.addListener((command) => {
@@ -27,20 +24,23 @@ chrome.commands.onCommand.addListener((command) => {
     else if (command === "answer") {
         chrome.storage.local.get(["question", "choices"], async (items) => {
             let q = `Answer this question based on the novel The Great Gatsby:\n${items.question}\n\nThe choices are:\n${items.choices.map((v, i) => `${i + 1}. ${v}`).join("\n")}\n\nYou must respond only in numbers, without any explanation on the answer nor the answer itself.`
-            let { text: resp } = await gpt.sendMessage(q);
+            gpt.sendMessage(q).then((r) => {
+                let resp = r.text;
 
-            chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
-                let tabId = tabs[0].id;
+                chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+                    let tabId = tabs[0].id;
 
-                chrome.scripting.executeScript({
-                    target: { tabId, allFrames: true },
-                    func: () => {
-                        let i = document.getElementById("ans") ?? document.createElement("p");
-                        i.id = "ans";
-                        i.innerText = resp;
-                        i.style = "position: fixed; right: 5px; bottom: 5px; color: white; z-index: 5000;";
-                        document.body.appendChild(i);
-                    }
+                    chrome.scripting.executeScript({
+                        target: { tabId, allFrames: true },
+                        func: (resp) => {
+                            let i = document.getElementById("ans") ?? document.createElement("p");
+                            i.id = "ans";
+                            i.innerText = resp;
+                            i.style = "position: fixed; left: 5px; bottom: 5px; color: white; z-index: 5000;";
+                            document.body.appendChild(i);
+                        },
+                        args: [resp]
+                    });
                 });
             });
         });
