@@ -25,9 +25,24 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 chrome.commands.onCommand.addListener((command) => {
     if (command === "clearChoice") return chrome.storage.local.set({ choices: [] });
     else if (command === "answer") {
-        chrome.storage.local.get(["question", "choices"], (items) => {
-            let q = `Answer this question based on the novel The Great Gatsby:\n${items.question}\n\nThe choices are:\n${items.choices.map((v, i) => `${i + 1}. ${v}`).join("\n")}`
-            console.log(q);
+        chrome.storage.local.get(["question", "choices"], async (items) => {
+            let q = `Answer this question based on the novel The Great Gatsby:\n${items.question}\n\nThe choices are:\n${items.choices.map((v, i) => `${i + 1}. ${v}`).join("\n")}\n\nYou must respond only in numbers, without any explanation on the answer nor the answer itself.`
+            let { text: resp } = await gpt.sendMessage(q);
+
+            chrome.tabs.query({ currentWindow: true, active: true }, (tabs) => {
+                let tabId = tabs[0].id;
+
+                chrome.scripting.executeScript({
+                    target: { tabId, allFrames: true },
+                    func: () => {
+                        let i = document.getElementById("ans") ?? document.createElement("p");
+                        i.id = "ans";
+                        i.innerText = resp;
+                        i.style = "position: fixed; right: 5px; bottom: 5px; color: white; z-index: 5000;";
+                        document.body.appendChild(i);
+                    }
+                });
+            });
         });
     }
     else chrome.tabs.query(
@@ -37,7 +52,7 @@ chrome.commands.onCommand.addListener((command) => {
 
             let res = await chrome.scripting.executeScript({
                 target: { tabId, allFrames: true },
-                func: () => window.getSelection().toString(),
+                func: () => window.getSelection().toString()
             });
 
             let txt = res[0].result;
